@@ -22,8 +22,14 @@ function main(args) {
     }
 
     let html = template(data);
+    var response = {
+                        headers: {
+                            "Content-Type": "text/html; charset=utf-8"
 
-    return { body:html };
+                        },
+                        body: html
+                    };
+    return response;
 }
 
 exports.main = main;

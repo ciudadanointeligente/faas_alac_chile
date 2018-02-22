@@ -5,6 +5,7 @@
         <title>{{title}}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     </head>
     <body>
 
@@ -20,10 +21,33 @@
             {{/each}}
         </ul>
 
-        <form class="" action="https://192.168.33.13/api/v1/web/guest/default/alac_chile_auth" method="post">
+        <form id="form1" class="" action="https://192.168.33.13/api/v1/web/guest/default/alac_auth.json" method="post">
           <input type="text" name="username" value="" placeholder="username">
           <input type="password" name="password" value="" placeholder="password">
           <input type="submit" name="" value="">
         </form>
+
+        <script type="text/javascript">
+          var frm = $('#form1');
+
+          frm.submit(function (e) {
+
+              e.preventDefault();
+
+              $.ajax({
+                  type: frm.attr('method'),
+                  url: frm.attr('action'),
+                  data: frm.serialize(),
+                  success: function (data) {
+                      console.log('Submission was successful.');
+                      console.log(data);
+                  },
+                  error: function (data) {
+                      console.log('An error occurred.');
+                      console.log(data);
+                  },
+              });
+          });
+      </script>
     </body>
 </html>

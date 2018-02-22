@@ -25,6 +25,7 @@ const request = require('supertest');
 
 */
 function main(args) {
+  console.log("inside main");
   return new Promise((resolve, reject) => {
     // Set baseurl and staticbaseurl so that templates can you them
     app.locals.baseurl = args.baseurl;
@@ -42,12 +43,16 @@ function main(args) {
       req.query(args.__ow_query);
 
     if (args.__ow_body && (args.__ow_method === 'post' || args.__ow_method === 'put')) {
+      console.log("inside main 1");
       req = req.send(args.__ow_body);
     }
 
     req.end((err, res) => {
-      if (err)
+      console.log("inside main 2");
+      if (err){
+        console.log("inside main 3");
         reject(err);
+      }
 
       // Convert response back to a OpenWhisk response object.
       return resolve({
