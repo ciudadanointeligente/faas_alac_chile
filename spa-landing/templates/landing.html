@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta charset="utf-8">
+
+	<title>Single Page App Without A Framework</title>
+
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400" rel="stylesheet">
+
+	<style>
+	* {
+		margin:0;
+		padding:0;
+	}
+
+	body{
+		font: normal 16px Arial, Helvetica, sans-serif;
+	}
+
+	h1, h3{
+		font: normal 24px 'Open Sans', Arial, Helvetica, sans-serif;
+	}
+
+	/*-----------------
+		The Header
+	------------------*/
+
+	header {
+		position: fixed;
+		top: 0;
+		left:0;
+		right:0;
+
+		height: 40px;
+		z-index: 100;
+
+		background-color: #282b2c;
+		padding: 20px 40px;
+		color: #fff;
+		box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.1);
+	}
+
+	header a {
+		color: #ffffff;
+		text-decoration: none;
+	}
+
+	header h2.tzine{
+		float: right;
+		opacity:0.9;
+	}
+
+	header h2.tzine:hover{
+		opacity:1;
+	}
+
+	header h2.tzine a{
+		font-size: 13px;
+		text-transform: uppercase;
+		display: inline-block;
+		padding: 12px 18px;
+		border-radius: 3px;
+		background-color: #5895DB;
+	}
+
+
+	@media (max-width: 500px){
+
+		header {
+			padding: 20px 15px;
+		}
+
+		header h1{
+			font-size: 24px;
+			margin: 0;
+		}
+
+	}
+
+	/*-----------------
+		Main Content
+	------------------*/
+
+
+	.main-content{
+		box-sizing: border-box;
+		text-align: center;
+		margin: 125px auto 60px;
+		padding: 0 40px;
+	}
+
+	.main-content h3{
+		font-size: 28px;
+		color:  #5a96b9;
+		padding-bottom: 20px;
+	}
+
+	@media (max-width: 600px){
+
+		.main-content{
+			margin: 45px auto;
+			padding: 0 25px;
+		}
+
+	}
+
+
+	/*-------------------
+		All Products Page
+	--------------------*/
+
+	/*	Filter Form	*/
+
+	.filters{
+		box-sizing: border-box;
+		padding: 5px 30px 30px;
+		width: 190px;
+		background-color: #FFF;
+		border: 1px solid #DBE3E7;
+		border-radius: 3px;
+		box-shadow: 1px 3px 1px rgba(0, 0, 0, 0.08);
+		position: fixed;
+		text-align: left;
+		color: #2B2E31;
+		opacity: 0;
+		pointer-events: none;
+	}
+
+	.filters .filter-criteria{
+		display: block;
+		margin: 10px 0 10px;
+	}
+
+	.filters span{
+		font-size:14px;
+		display: block;
+		margin-bottom: 12px;
+		font-weight: bold;
+		margin-top: 20px;
+	}
+
+	.filters label{
+		display: block;
+		line-height: 1.4;
+		font-size: 15px;
+	}
+
+	.filters label input{
+		margin-right: 10px;
+	}
+
+	.filters button{
+		border-radius: 2px;
+		background-color:  #4BC34B;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+		border: 0;
+		color: #ffffff;
+		font-weight: bold;
+		font-size: 13px;
+		cursor: pointer;
+
+		width: 95px;
+		height: 32px;
+		margin-top: 10px;
+	}
+
+
+	/*	Products List	*/
+
+	.all-products h3{
+		opacity: 0;
+	}
+
+	.products-list{
+		list-style:none;
+		margin-left:225px;
+		max-width: 1500px;
+		text-align: center;
+		padding: 0;
+		opacity: 0;
+		font-size: 0;
+	}
+
+	.all-products.visible .products-list,
+	.all-products.visible .filters,
+	.all-products.visible h3{
+		opacity: 1;
+		transition: 1s;
+		pointer-events: auto;
+	}
+
+	.products-list > li{
+		box-sizing:border-box;
+		display: inline-block;
+		cursor: pointer;
+		position: relative;
+		transition: 0.2s;
+
+		text-align:left;
+		font:normal 12px sans-serif;
+
+		background-color:#ffffff;
+		border:1px solid #dbe3e7;
+		border-radius: 3px;
+		box-shadow: 1px 3px 1px rgba(0, 0, 0, 0.08);
+
+		margin: 0 12px 14px 0;
+		padding: 25px;
+	}
+
+	.products-list > li.hidden{
+		opacity: 0.2;
+		pointer-events: none;
+	}
+
+	/* The product image */
+
+	.products-list .product-photo{
+		display: block;
+		text-align: center;
+		box-shadow : 0 0 20px 8px #f3f3f3 inset;
+
+		width: 275px;
+		margin-bottom: 25px;
+		padding: 20px 0;
+		box-sizing: border-box;
+	}
+
+	/* The product name */
+
+	.products-list h2{
+		display: block;
+		font-size: 18px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow:ellipsis;
+		max-width: 200px;
+		margin:0;
+	}
+
+	.products-list h2 a{
+		text-decoration: none;
+		color: #2B2E31;
+	}
+
+	/* Product description */
+
+	.products-list .product-description{
+		margin-top: 20px;
+
+		color: #5d5d5d;
+		font-size: 14px;
+		line-height: 1.45;
+		white-space: normal;
+
+		max-width: 260px;
+		margin-bottom: 20px;
+
+		list-style: none;
+	}
+
+	.products-list .product-description li{
+		display: inline-block;
+		margin-right: 5px;
+	}
+
+	.products-list .product-description li:first-child{
+		display: block;
+	}
+
+	.products-list .product-description li span{
+		font-weight: bold;
+	}
+
+	/* Price and order button */
+
+	.products-list button{
+		border-radius: 2px;
+		background-color:  #87bae1;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.12);
+		border: 0;
+		color: #ffffff;
+		font-weight: bold;
+		font-size: 13px;
+		cursor: pointer;
+
+		width: 95px;
+		height: 32px;
+	}
+
+	.products-list .product-price{
+		float: right;
+
+		color:  #4e4e4e;
+		font-weight: bold;
+		font-size: 20px;
+
+		padding-top: 6px;
+		margin: 0;
+	}
+
+	.products-list .highlight{
+		position: absolute;
+		top:0;
+		left:0;
+		width:100%;
+		height:100%;
+		background-color: rgba(0,0,0,0.1);
+		opacity: 0;
+		transition: 0.4s;
+	}
+
+	.products-list > li:hover .highlight{
+		opacity: 1;
+	}
+
+	/* Making the list responsive */
+
+	@media (max-width: 800px){
+
+		.products-list .product-photo{
+			width: 225px;
+		}
+
+		.products-list .product-description{
+			max-width: 225px;
+		}
+	}
+
+
+	/*---------------------------
+		Single Product Page
+	----------------------------*/
+
+	.single-product{
+		z-index: 100;
+	}
+
+	.overlay{
+		height: 20px;
+		width: 100%;
+		position: fixed;
+		top: 0;
+		left: 0;
+		background-color: #282b2c;
+		transition: 0.6s;
+		z-index: 100;
+	}
+
+	.single-product.visible .overlay{
+		height: 100%;
+	}
+
+	.preview-large{
+		box-sizing: border-box;
+		width: 760px;
+		height: 550px;
+		position: fixed;
+		left: 50%;
+		margin-left: -375px;
+		top: 50%;
+		margin-top: -275px;
+		pointer-events: none;
+
+		border-radius: 6px;
+		background-color:  #ffffff;
+
+		z-index: 102;
+		opacity: 0;
+		transition: 0.4s;
+
+	}
+
+	.single-product.visible .preview-large{
+		opacity: 1;
+		transition: 1.4s;
+		pointer-events: auto;
+	}
+
+	.preview-large h3{
+		margin-top: 20px;
+	}
+
+	.preview-large img{
+		width: 100%;
+		height: 280px;
+		border-bottom: 3px solid #efefef;
+		border-radius: 5px 5px 0 0;
+	}
+
+	.preview-large p{
+		line-height: 23px;
+		padding: 50px 45px;
+	}
+
+	.close{
+		position: absolute;
+		right: 25px;
+		top: 15px;
+
+		font-size: 28px;
+		color: #555;
+		cursor: pointer;
+	}
+
+
+	/*---------------------------
+		Error Page
+	----------------------------*/
+
+	.error{
+		opacity: 0;
+		transition: 0.6s;
+		pointer-events: none;
+		position: absolute;
+		left: 0;
+		top: 100px;
+		width: 100%;
+	}
+
+	.error.visible{
+		opacity: 1;
+	}
+
+	.error h3{
+		font-size: 40px;
+	}
+
+
+	</style>
+</head>
+
+<body>
+
+	<header class="compact">
+		<h2 class="tzine"><a href="http://tutorialzine.com/2015/02/single-page-app-without-a-framework/">Back to article</a></h2>
+		<h1><a href="#">Single Page App Without A Framework</a></h1>
+	</header>
+
+	<div class="main-content">
+
+
+<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// --->
+		<div class="all-products page">
+
+			<div class="filters">
+				<form>
+					<div class="filter-criteria">
+						<span>Manufacturer</span>
+						<label><input type="checkbox" name="manufacturer" value="apple">Apple</label>
+						<label><input type="checkbox" name="manufacturer" value="samsung">Samsung</label>
+						<label><input type="checkbox" name="manufacturer" value="htc">HTC</label>
+						<label><input type="checkbox" name="manufacturer" value="nokia">Nokia</label>
+						<label><input type="checkbox" name="manufacturer" value="zte">ZTE</label>
+						<label><input type="checkbox" name="manufacturer" value="sony">Sony</label>
+					</div>
+
+					<div class="filter-criteria">
+						<span>Screen Size</span>
+						<label><input type="checkbox" value="16" name="storage">16 GB</label>
+						<label><input type="checkbox" value="32" name="storage">32 GB</label>
+					</div>
+
+					<div class="filter-criteria">
+						<span>OS</span>
+						<label><input type="checkbox" value="android" name="os">Android</label>
+						<label><input type="checkbox" value="ios" name="os">iOS</label>
+						<label><input type="checkbox" value="windows" name="os">Windows</label>
+					</div>
+
+					<div class="filter-criteria">
+						<span>Camera</span>
+						<label><input type="checkbox" value="5" name="camera">5 Mpx</label>
+						<label><input type="checkbox" value="8" name="camera">8 Mpx</label>
+						<label><input type="checkbox" value="12" name="camera">12 Mpx</label>
+						<label><input type="checkbox" value="15" name="camera">15 Mpx</label>
+					</div>
+
+					<button>Clear filters</button>
+				</form>
+			</div>
+
+			<ul class="products-list">
+				<script id="products-template" type="x-handlebars-template">​
+					{{#each this}}
+						<li data-index="{{id}}">
+							<a href="#" class="product-photo"><img src="{{image.small}}" height="130" alt="{{name}}"/></a>
+							<h2><a href="#"> {{name}} </a></h2>
+							<ul class="product-description">
+								<li><span>Manufacturer: </span>{{specs.manufacturer}}</li>
+								<li><span>Storage: </span>{{specs.storage}} GB</li>
+								<li><span>OS: </span>{{specs.os}}</li>
+								<li><span>Camera: </span>{{specs.camera}} Mpx</li>
+							</ul>
+							<button>Buy Now!</button>
+							<p class="product-price">{{price}}$</p>
+							<div class="highlight"></div>
+						</li>
+					{{/each}}
+				</script> 
+			</ul>
+
+		</div>
+
+<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// --->
+		<div class="single-product page">
+
+			<div class="overlay"></div>
+
+			<div class="preview-large">
+				<h3>Single product view</h3>
+				<img src=""/>
+				<p></p>
+
+				<span class="close">×</span>
+			</div>
+
+		</div>
+
+		<div class="error page">
+			<h3>Sorry, something went wrong :(</h3>
+		</div>
+
+	</div>
+<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// --->
+	<br>
+	<br>
+	<br>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+	<script>
+	$(function () {
+
+		// Globals variables
+
+			// 	An array containing objects with information about the products.
+		var products = [],
+
+			// Our filters object will contain an array of values for each filter
+
+			// Example:
+			// filters = {
+			// 		"manufacturer" = ["Apple","Sony"],
+			//		"storage" = [16]
+			//	}
+			filters = {};
+
+
+		//	Event handlers for frontend navigation
+
+		//	Checkbox filtering
+
+		var checkboxes = $('.all-products input[type=checkbox]');
+
+		checkboxes.click(function () {
+
+			var that = $(this),
+				specName = that.attr('name');
+
+			// When a checkbox is checked we need to write that in the filters object;
+			if(that.is(":checked")) {
+
+				// If the filter for this specification isn't created yet - do it.
+				if(!(filters[specName] && filters[specName].length)){
+					filters[specName] = [];
+				}
+
+				//	Push values into the chosen filter array
+				filters[specName].push(that.val());
+
+				// Change the url hash;
+				createQueryHash(filters);
+
+			}
+
+			// When a checkbox is unchecked we need to remove its value from the filters object.
+			if(!that.is(":checked")) {
+
+				if(filters[specName] && filters[specName].length && (filters[specName].indexOf(that.val()) != -1)){
+
+					// Find the checkbox value in the corresponding array inside the filters object.
+					var index = filters[specName].indexOf(that.val());
+
+					// Remove it.
+					filters[specName].splice(index, 1);
+
+					// If it was the last remaining value for this specification,
+					// delete the whole array.
+					if(!filters[specName].length){
+						delete filters[specName];
+					}
+
+				}
+
+				// Change the url hash;
+				createQueryHash(filters);
+			}
+		});
+
+		// When the "Clear all filters" button is pressed change the hash to '#' (go to the home page)
+		$('.filters button').click(function (e) {
+			e.preventDefault();
+			window.location.hash = '#';
+		});
+
+
+		// Single product page buttons
+
+		var singleProductPage = $('.single-product');
+
+		singleProductPage.on('click', function (e) {
+
+			if (singleProductPage.hasClass('visible')) {
+
+				var clicked = $(e.target);
+
+				// If the close button or the background are clicked go to the previous page.
+				if (clicked.hasClass('close') || clicked.hasClass('overlay')) {
+					// Change the url hash with the last used filters.
+					createQueryHash(filters);
+				}
+
+			}
+
+		});
+
+
+		// These are called on page load
+
+		// Get data about our products from products.json.
+		$.getJSON( "https://192.168.33.13/api/v1/web/guest/default/spa_products.json", function( data ) {
+
+			// Write the data into our global variable.
+			//products = data.payload;
+			// Call a function to create HTML for all the products.
+			var products=[];
+
+			products=[data.body, data.body, data.body, data.body, data.body, data.body];
+			console.log(products);
+			generateAllProductsHTML(products);
+
+			// Manually trigger a hashchange to start the app.
+			$(window).trigger('hashchange');
+		});
+
+
+		// An event handler with calls the render function on every hashchange.
+		// The render function will show the appropriate content of out page.
+		$(window).on('hashchange', function(){
+			render(decodeURI(window.location.hash));
+		});
+
+
+		// Navigation
+
+		function render(url) {
+
+			// Get the keyword from the url.
+			var temp = url.split('/')[0];
+
+			// Hide whatever page is currently shown.
+			$('.main-content .page').removeClass('visible');
+
+
+			var	map = {
+
+				// The "Homepage".
+				'': function() {
+
+					// Clear the filters object, uncheck all checkboxes, show all the products
+					filters = {};
+					checkboxes.prop('checked',false);
+
+					renderProductsPage(products);
+				},
+
+				// Single Products page.
+				'#product': function() {
+
+					// Get the index of which product we want to show and call the appropriate function.
+					var index = url.split('#product/')[1].trim();
+
+					renderSingleProductPage(index, products);
+				},
+
+				// Page with filtered products
+				'#filter': function() {
+
+					// Grab the string after the '#filter/' keyword. Call the filtering function.
+					url = url.split('#filter/')[1].trim();
+
+					// Try and parse the filters object from the query string.
+					try {
+						filters = JSON.parse(url);
+					}
+						// If it isn't a valid json, go back to homepage ( the rest of the code won't be executed ).
+					catch(err) {
+						window.location.hash = '#';
+						return;
+					}
+
+					renderFilterResults(filters, products);
+				}
+
+			};
+
+			// Execute the needed function depending on the url keyword (stored in temp).
+			if(map[temp]){
+				map[temp]();
+			}
+			// If the keyword isn't listed in the above - render the error page.
+			else {
+				renderErrorPage();
+			}
+
+		}
+
+
+		// This function is called only once - on page load.
+		// It fills up the products list via a handlebars template.
+		// It recieves one parameter - the data we took from products.json.
+		function generateAllProductsHTML(data){
+
+			var list = $('.all-products .products-list');
+
+			var theTemplateScript = $("#products-template").html();
+			//Compile the template​
+			var theTemplate = Handlebars.compile (theTemplateScript);
+			list.append (theTemplate(data));
+
+
+			// Each products has a data-index attribute.
+			// On click change the url hash to open up a preview for this product only.
+			// Remember: every hashchange triggers the render function.
+			list.find('li').on('click', function (e) {
+				e.preventDefault();
+
+				var productIndex = $(this).data('index');
+
+				window.location.hash = 'product/' + productIndex;
+			})
+		}
+
+		// This function receives an object containing all the product we want to show.
+		function renderProductsPage(data){
+
+			var page = $('.all-products'),
+				allProducts = $('.all-products .products-list > li');
+
+			// Hide all the products in the products list.
+			allProducts.addClass('hidden');
+
+			// Iterate over all of the products.
+			// If their ID is somewhere in the data object remove the hidden class to reveal them.
+			allProducts.each(function () {
+
+				var that = $(this);
+
+				data.forEach(function (item) {
+					if(that.data('index') == item.id){
+						that.removeClass('hidden');
+					}
+				});
+			});
+
+			// Show the page itself.
+			// (the render function hides all pages so we need to show the one we want).
+			page.addClass('visible');
+
+		}
+
+
+		// Opens up a preview for one of the products.
+		// Its parameters are an index from the hash and the products object.
+		function renderSingleProductPage(index, data){
+
+			var page = $('.single-product'),
+				container = $('.preview-large');
+
+			// Find the wanted product by iterating the data object and searching for the chosen index.
+			if(data.length){
+				data.forEach(function (item) {
+					if(item.id == index){
+						// Populate '.preview-large' with the chosen product's data.
+						container.find('h3').text(item.name);
+						container.find('img').attr('src', item.image.large);
+						container.find('p').text(item.description);
+					}
+				});
+			}
+
+			// Show the page.
+			page.addClass('visible');
+
+		}
+
+		// Find and render the filtered data results. Arguments are:
+		// filters - our global variable - the object with arrays about what we are searching for.
+		// products - an object with the full products list (from product.json).
+		function renderFilterResults(filters, products){
+
+				// This array contains all the possible filter criteria.
+			var criteria = ['manufacturer','storage','os','camera'],
+				results = [],
+				isFiltered = false;
+
+			// Uncheck all the checkboxes.
+			// We will be checking them again one by one.
+			checkboxes.prop('checked', false);
+
+
+			criteria.forEach(function (c) {
+
+				// Check if each of the possible filter criteria is actually in the filters object.
+				if(filters[c] && filters[c].length){
+
+
+					// After we've filtered the products once, we want to keep filtering them.
+					// That's why we make the object we search in (products) to equal the one with the results.
+					// Then the results array is cleared, so it can be filled with the newly filtered data.
+					if(isFiltered){
+						products = results;
+						results = [];
+					}
+
+
+					// In these nested 'for loops' we will iterate over the filters and the products
+					// and check if they contain the same values (the ones we are filtering by).
+
+					// Iterate over the entries inside filters.criteria (remember each criteria contains an array).
+					filters[c].forEach(function (filter) {
+
+						// Iterate over the products.
+						products.forEach(function (item){
+
+							// If the product has the same specification value as the one in the filter
+							// push it inside the results array and mark the isFiltered flag true.
+
+							if(typeof item.specs[c] == 'number'){
+								if(item.specs[c] == filter){
+									results.push(item);
+									isFiltered = true;
+								}
+							}
+
+							if(typeof item.specs[c] == 'string'){
+								if(item.specs[c].toLowerCase().indexOf(filter) != -1){
+									results.push(item);
+									isFiltered = true;
+								}
+							}
+
+						});
+
+						// Here we can make the checkboxes representing the filters true,
+						// keeping the app up to date.
+						if(c && filter){
+							$('input[name='+c+'][value='+filter+']').prop('checked',true);
+						}
+					});
+				}
+
+			});
+
+			// Call the renderProductsPage.
+			// As it's argument give the object with filtered products.
+			renderProductsPage(results);
+		}
+
+
+		// Shows the error page.
+		function renderErrorPage(){
+			var page = $('.error');
+			page.addClass('visible');
+		}
+
+		// Get the filters object, turn it into a string and write it into the hash.
+		function createQueryHash(filters){
+
+			// Here we check if filters isn't empty.
+			if(!$.isEmptyObject(filters)){
+				// Stringify the object via JSON.stringify and write it after the '#filter' keyword.
+				window.location.hash = '#filter/' + JSON.stringify(filters);
+			}
+			else{
+				// If it's empty change the hash to '#' (the homepage).
+				window.location.hash = '#';
+			}
+
+		}
+
+	});
+
+	</script>
+
+
+</body>
+</html>
