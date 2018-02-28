@@ -1,6 +1,6 @@
 
 function main(params) {
-var vari =   {
+var vari =   [{
       "id": 1,
       "name": "Sony Xperia Z3",
       "price": 899,
@@ -16,7 +16,42 @@ var vari =   {
         "small": "assets/images/sony-xperia-z3.jpg",
         "large": "assets/images/sony-xperia-z3-large.jpg"
       }
-    } ;
+    },
+    {
+          "id": 2,
+          "name": "Sony Xperia Z3",
+          "price": 899,
+          "specs": {
+            "manufacturer": "Sony",
+            "storage": 16,
+            "os": "Android",
+            "camera": 15
+          },
+          "description": "Lorem ipsum dolor sito. Etiam eget tellus arcu.",
+          "rating": 4,
+          "image": {
+            "small": "assets/images/sony-xperia-z3.jpg",
+            "large": "assets/images/sony-xperia-z3-large.jpg"
+          }
+        },
+        {
+              "id": 3,
+              "name": "Sony Xperia Z3234",
+              "price": 89339,
+              "specs": {
+                "manufacturer": "Sony",
+                "storage": 164,
+                "os": "Android",
+                "camera": 153
+              },
+              "description": "Lorem ipsum dolor sito. Etiam eget tellus arcu.",
+              "rating": 4,
+              "image": {
+                "small": "assets/images/sony-xperia-z3.jpg",
+                "large": "assets/images/sony-xperia-z3-large.jpg"
+              }
+            }
+  ];
 
 return {
   headers: {"Content-Type": "application/json; charset=utf-8"},
