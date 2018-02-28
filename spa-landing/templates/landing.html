@@ -442,9 +442,9 @@
 	<div class="main-content">
 
 
-<!-- ///////////////////////////////// --->
-<!-- ///////////////////////////////// --->
-<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// -->
+<!-- ///////////////////////////////// -->
+<!-- ///////////////////////////////// -->
 		<div class="all-products page">
 
 			<div class="filters">
@@ -485,30 +485,33 @@
 			</div>
 
 			<ul class="products-list">
-				<script id="products-template" type="x-handlebars-template">​
-					{{#each this}}
-						<li data-index="{{id}}">
-							<a href="#" class="product-photo"><img src="{{image.small}}" height="130" alt="{{name}}"/></a>
-							<h2><a href="#"> {{name}} </a></h2>
+
+				<script id="products-template" type="text/x-handlebars-template">​
+
+					\{{#each this}}
+						<li data-index="\{{id}}">
+							<a href="#" class="product-photo"><img src="\{{image.small}}" height="130" alt="\{{name}}"/></a>
+							<h2><a href="#"> \{{name}} </a></h2>
 							<ul class="product-description">
-								<li><span>Manufacturer: </span>{{specs.manufacturer}}</li>
-								<li><span>Storage: </span>{{specs.storage}} GB</li>
-								<li><span>OS: </span>{{specs.os}}</li>
-								<li><span>Camera: </span>{{specs.camera}} Mpx</li>
+								<li><span>Manufacturer: </span>\{{specs.manufacturer}}</li>
+								<li><span>Storage: </span>\{{specs.storage}} GB</li>
+								<li><span>OS: </span>\{{specs.os}}</li>
+								<li><span>Camera: </span>\{{specs.camera}} Mpx</li>
 							</ul>
 							<button>Buy Now!</button>
-							<p class="product-price">{{price}}$</p>
+							<p class="product-price">\{{price}}$</p>
 							<div class="highlight"></div>
 						</li>
-					{{/each}}
+					\{{/each}}
+
 				</script> 
 			</ul>
 
 		</div>
 
-<!-- ///////////////////////////////// --->
-<!-- ///////////////////////////////// --->
-<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// -->
+<!-- ///////////////////////////////// -->
+<!-- ///////////////////////////////// -->
 		<div class="single-product page">
 
 			<div class="overlay"></div>
@@ -528,16 +531,17 @@
 		</div>
 
 	</div>
-<!-- ///////////////////////////////// --->
-<!-- ///////////////////////////////// --->
-<!-- ///////////////////////////////// --->
+<!-- ///////////////////////////////// -->
+<!-- ///////////////////////////////// -->
+<!-- ///////////////////////////////// -->
 	<br>
 	<br>
 	<br>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
 	<script>
-	$(function () {
+	$( document ).ready(function() {
+
 
 		// Globals variables
 
@@ -639,11 +643,9 @@
 		$.getJSON( "https://192.168.33.13/api/v1/web/guest/default/spa_products.json", function( data ) {
 
 			// Write the data into our global variable.
-			//products = data.payload;
+			products = data.body;
 			// Call a function to create HTML for all the products.
-			var products=[];
 
-			products=[data.body, data.body, data.body, data.body, data.body, data.body];
 			console.log(products);
 			generateAllProductsHTML(products);
 
@@ -728,12 +730,17 @@
 		// It fills up the products list via a handlebars template.
 		// It recieves one parameter - the data we took from products.json.
 		function generateAllProductsHTML(data){
-
 			var list = $('.all-products .products-list');
-
-			var theTemplateScript = $("#products-template").html();
+			console.log("loook");
+			console.log(data);
+			console.log("loook");
+			console.log(list);
+			var theTemplateScript = $('#products-template').html();
 			//Compile the template​
+
+			console.log(theTemplateScript);
 			var theTemplate = Handlebars.compile (theTemplateScript);
+			console.log('lll'+theTemplate);
 			list.append (theTemplate(data));
 
 
@@ -744,7 +751,7 @@
 				e.preventDefault();
 
 				var productIndex = $(this).data('index');
-
+				console.log(productIndex);
 				window.location.hash = 'product/' + productIndex;
 			})
 		}
